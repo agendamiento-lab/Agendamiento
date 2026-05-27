@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Solicitud de Instalación · Aroma Cafetero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:    #fbbd5e;
+      --gold-dk: #e0a030;
+      --ink:     #1d1d1b;
+      --white:   #ffffff;
+      --border:  rgba(251,189,94,0.22);
+      --red:     #c0392b;
+      --radius:  10px;
+      --shadow:  0 8px 40px rgba(0,0,0,0.45);
+    }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    html, body {
+      min-height: 100%; width: 100%;
+      font-family: 'Jost', sans-serif;
+      background-color: #1d1d1b;
+      color: var(--white);
+      overflow-x: hidden;
+    }
+    .bg-patron {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-color: #1d1d1b;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M10 50 C10 40, 20 40, 20 30 C20 20, 30 20, 30 10 M20 50 C20 40, 30 40, 30 30 C30 20, 40 20, 40 10 M30 50 C30 40, 40 40, 40 30 C40 20, 50 20, 50 10 M0 40 C0 30, 10 30, 10 20 C10 10, 20 10, 20 0 M40 60 C40 50, 50 50, 50 40 C50 30, 60 30, 60 20' stroke='%23fbbd5e' stroke-width='2.2' fill='none' opacity='0.18'/%3E%3C/svg%3E");
+      background-size: 60px 60px;
+    }
+    .bg-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: linear-gradient(160deg, rgba(29,29,27,0.82) 0%, rgba(29,29,27,0.70) 100%);
+    }
+    .wrapper {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 680px;
+      margin: 0 auto; padding: 32px 16px 60px;
+    }
+    .header { text-align: center; margin-bottom: 28px; animation: fadeDown .6s ease both; }
+    .logo-img {
+      width: 100px; height: 100px; object-fit: contain;
+      border-radius: 50%; border: 2px solid var(--gold);
+      padding: 10px; background: #111;
+      box-shadow: 0 0 0 6px rgba(251,189,94,0.10), var(--shadow);
+      margin-bottom: 14px;
+    }
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px,5vw,30px); font-weight: 700;
+      color: var(--white); letter-spacing: -.3px; line-height: 1.2;
+    }
+    .header-title span { color: var(--gold); }
+    .header-sub { margin-top: 8px; color: rgba(255,255,255,0.45); font-size: clamp(12px,3vw,14px); }
+    .card {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 14px; backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px); overflow: hidden;
+      animation: fadeUp .5s .1s ease both;
+    }
+    fieldset { border: none; padding: 22px 20px 4px; border-bottom: 1px solid var(--border); }
+    fieldset:last-of-type { border-bottom: none; }
+    legend {
+      font-size: 11px; font-weight: 600; letter-spacing: 1.8px;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px; width: 100%;
+    }
+    legend::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .row-2 { display: grid; grid-template-columns: 1fr; gap: 0; }
+    @media (min-width: 560px) { .row-2 { grid-template-columns: 1fr 1fr; gap: 14px; } }
+    .field { display: flex; flex-direction: column; margin-bottom: 18px; }
+    label {
+      font-size: clamp(11px,3vw,12px); font-weight: 600; letter-spacing: .6px;
+      text-transform: uppercase; color: rgba(255,255,255,0.5);
+      margin-bottom: 6px; line-height: 1.4;
+    }
+    label small {
+      display: block; font-size: clamp(10px,2.5vw,11px); font-weight: 400;
+      letter-spacing: .2px; text-transform: none;
+      color: rgba(251,189,94,0.6); margin-top: 2px;
+    }
+    input, select {
+      width: 100%; padding: 14px; border: 1.5px solid rgba(251,189,94,0.2);
+      border-radius: var(--radius); font-family: 'Jost', sans-serif;
+      font-size: 16px; color: var(--white);
+      background: rgba(255,255,255,0.06);
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      appearance: none; -webkit-appearance: none; outline: none; min-height: 50px;
+    }
+    input::placeholder { color: rgba(255,255,255,0.25); }
+    input:focus, select:focus {
+      border-color: var(--gold); background: rgba(251,189,94,0.06);
+      box-shadow: 0 0 0 3px rgba(251,189,94,0.12);
+    }
+    input.invalid, select.invalid {
+      border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.12);
+    }
+    select { color: var(--white); cursor: pointer; }
+    select option { background: #2a2a28; color: var(--white); }
+    .select-wrap { position: relative; }
+    .select-wrap select { padding-right: 38px; }
+    .select-ico {
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--gold);
+      pointer-events: none; font-size: 13px;
+    }
+    .field-err { font-size: clamp(11px,3vw,12px); color: #e57373; margin-top: 5px; min-height: 16px; }
+    .nota {
+      background: rgba(251,189,94,0.07); border-left: 3px solid var(--gold);
+      border-radius: 0 6px 6px 0; padding: 10px 14px;
+      font-size: clamp(12px,3vw,13px); color: rgba(255,255,255,0.55);
+      margin-bottom: 18px; line-height: 1.6;
+    }
+    .btn-area { padding: 16px 20px 24px; }
+    button[type="submit"] {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; min-height: 54px; padding: 16px; border: none;
+      border-radius: var(--radius); background: var(--gold); color: var(--ink);
+      font-family: 'Playfair Display', serif; font-size: clamp(15px,4vw,17px);
+      font-weight: 700; cursor: pointer;
+      transition: background .2s, transform .1s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(251,189,94,0.30);
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    }
+    button[type="submit"]:hover   { background: var(--gold-dk); }
+    button[type="submit"]:active  { transform: scale(.98); }
+    button[type="submit"]:disabled {
+      background: rgba(251,189,94,0.35); color: rgba(29,29,27,0.5);
+      cursor: not-allowed; box-shadow: none;
+    }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid rgba(29,29,27,0.3); border-top-color: var(--ink);
+      border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0;
+    }
+    .hidden { display: none !important; }
+    .toast {
+      margin-top: 14px; padding: 14px 18px; border-radius: var(--radius);
+      font-size: clamp(13px,3.5vw,14px); font-weight: 500;
+      text-align: center; line-height: 1.5; animation: fadeUp .3s ease both;
+    }
+    .toast.ok  { background: rgba(39,174,96,0.15);  color: #6fda9c; border: 1px solid rgba(39,174,96,0.3); }
+    .toast.err { background: rgba(192,57,43,0.15); color: #e57373; border: 1px solid rgba(192,57,43,0.3); }
+    .panel-exito {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 14px; backdrop-filter: blur(12px);
+      padding: 44px 20px; text-align: center; animation: fadeUp .4s ease both;
+    }
+    .exito-ico { font-size: 52px; margin-bottom: 16px; }
+    .panel-exito h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px,5vw,26px); color: var(--white); margin-bottom: 8px;
+    }
+    .panel-exito p { color: rgba(255,255,255,0.45); font-size: clamp(13px,3.5vw,15px); margin-bottom: 8px; }
+    .ticket-id {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px,5vw,26px); font-weight: 700;
+      color: var(--gold); letter-spacing: 1px; margin: 10px 0 24px;
+      padding: 12px 20px; background: rgba(251,189,94,0.10);
+      border: 1px solid rgba(251,189,94,0.25); border-radius: var(--radius);
+      display: inline-block; word-break: break-all; max-width: 100%;
+    }
+    .exito-sub { font-size: clamp(11px,3vw,13px) !important; color: rgba(255,255,255,0.3) !important; margin-bottom: 28px !important; }
+    .panel-exito button {
+      padding: 14px 32px; min-height: 50px;
+      border: 1.5px solid var(--gold); border-radius: var(--radius);
+      background: transparent; color: var(--gold);
+      font-family: 'Playfair Display', serif; font-size: clamp(14px,4vw,15px);
+      font-weight: 600; cursor: pointer; transition: background .2s, color .2s;
+    }
+    .panel-exito button:hover { background: var(--gold); color: var(--ink); }
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-18px) } to { opacity:1; transform:none } }
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(18px)  } to { opacity:1; transform:none } }
+    @keyframes spin     { to   { transform: rotate(360deg) } }
+  </style>
+</head>
+<body>
+  <div class="bg-patron"></div>
+  <div class="bg-overlay"></div>
+  <div class="wrapper">
+    <header class="header">
+      <img class="logo-img" src="https://i.imgur.com/Xj5sXgW.jpeg" alt="Aroma Cafetero">
+      <h1 class="header-title">Solicitud de<br><span>Instalación</span></h1>
+      <p class="header-sub">Completa el formulario · Recibirás confirmación por correo</p>
+    </header>
+
+    <form id="formulario" class="card" novalidate>
+      <!-- DATOS DEL CLIENTE -->
+      <fieldset>
+        <legend>Datos del cliente</legend>
+        <div class="nota">Puede ser el nombre de una <strong>persona natural</strong> o de una <strong>empresa / negocio</strong>.</div>
+        <div class="row-2">
+          <div class="field">
+            <label for="nombre">Nombre / Razón social <small>Persona o empresa titular</small></label>
+            <input type="text" id="nombre" placeholder="Ej. Cafetería El Granel S.A.S." required>
+            <span class="field-err" id="err-nombre"></span>
+          </div>
+          <div class="field">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" placeholder="correo@ejemplo.com" required>
+            <span class="field-err" id="err-email"></span>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="telefono">Teléfono principal</label>
+            <input type="text" id="telefono" placeholder="300 000 0000" required>
+            <span class="field-err" id="err-telefono"></span>
+          </div>
+          <div class="field">
+            <label for="nroFactura">Número de factura <small>CPV registrado en el sistema</small></label>
+            <input type="text" id="nroFactura" placeholder="Ej. CPV-00123" required>
+            <span class="field-err" id="err-nroFactura"></span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- DIRECCIÓN -->
+      <fieldset>
+        <legend>Dirección del servicio</legend>
+        <div class="row-2">
+          <div class="field">
+            <label for="direccion">Dirección <small>Donde se realizará la visita técnica</small></label>
+            <input type="text" id="direccion" placeholder="Calle / Carrera / Apto / Local" required>
+            <span class="field-err" id="err-direccion"></span>
+          </div>
+          <div class="field">
+            <label for="barrio">Barrio <small>Barrio al que pertenece la dirección</small></label>
+            <input type="text" id="barrio" placeholder="Ej. El Poblado" required>
+            <span class="field-err" id="err-barrio"></span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- CONTACTO -->
+      <fieldset>
+        <legend>Persona de contacto para el servicio</legend>
+        <div class="nota">Ingresa los datos de la <strong>persona que atenderá al técnico</strong> en el lugar de la visita.</div>
+        <div class="row-2">
+          <div class="field">
+            <label for="contacto">Nombre del contacto <small>Quien recibirá al técnico</small></label>
+            <input type="text" id="contacto" placeholder="Nombre completo" required>
+            <span class="field-err" id="err-contacto"></span>
+          </div>
+          <div class="field">
+            <label for="telefonoContacto">Teléfono del contacto <small>Número directo</small></label>
+            <input type="text" id="telefonoContacto" placeholder="300 000 0000" required>
+            <span class="field-err" id="err-telefonoContacto"></span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- MÁQUINA -->
+      <fieldset>
+        <legend>Equipo a intervenir</legend>
+        <div class="field">
+          <label for="maquina">Referencia de la máquina <small>Selecciona el equipo que requiere servicio</small></label>
+          <div class="select-wrap">
+            <select id="maquina" required>
+              <option value="">Cargando máquinas…</option>
+            </select>
+            <span class="select-ico">▾</span>
+          </div>
+          <span class="field-err" id="err-maquina"></span>
+        </div>
+      </fieldset>
+
+      <!-- ASIGNACIÓN -->
+      <fieldset>
+        <legend>Asignación comercial y técnica</legend>
+        <div class="field">
+          <label for="asesor">Asesor comercial</label>
+          <div class="select-wrap">
+            <select id="asesor" required>
+              <option value="">Cargando asesores…</option>
+            </select>
+            <span class="select-ico">▾</span>
+          </div>
+          <span class="field-err" id="err-asesor"></span>
+        </div>
+        <div class="field">
+          <label for="agenda">Horario disponible <small>Mín. 3 días hábiles desde hoy</small></label>
+          <div class="select-wrap">
+            <select id="agenda" required>
+              <option value="">Cargando horarios…</option>
+            </select>
+            <span class="select-ico">▾</span>
+          </div>
+          <span class="field-err" id="err-agenda"></span>
+        </div>
+      </fieldset>
+
+      <div class="btn-area">
+        <button type="submit" id="btn-submit">
+          <span id="btn-text">Registrar solicitud</span>
+          <span id="btn-spinner" class="spinner hidden"></span>
+        </button>
+      </div>
+    </form>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <div id="panel-exito" class="panel-exito hidden">
+      <div class="exito-ico">☕</div>
+      <h2>¡Solicitud registrada!</h2>
+      <p>Tu número de ticket es:</p>
+      <div class="ticket-id" id="ticket-id">—</div>
+      <p class="exito-sub">Enviamos la confirmación a tu correo electrónico.</p>
+      <button type="button" onclick="nuevaSolicitud()">Nueva solicitud</button>
+    </div>
+  </div>
+
+  <script>
+    // ─────────────────────────────────────────────
+    // ⚠️ CAMBIA ESTA URL por la de tu Apps Script
+    // (la URL del doPost que vas a publicar)
+    // ─────────────────────────────────────────────
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwjL2a0yMLbC6JtwCmmoWCXnRfpMaeMlY9VFoALEVd_q9o6IuOYpn8Xotsx70FxM8Q8wg/exec';
+
+    var horariosDisponibles = [];
+
+    // ── Cargar datos con JSONP (evita CORS) ──
+    window.addEventListener('DOMContentLoaded', function () {
+      cargarDatos();
+    });
+
+    function jsonp(url, callbackName, onSuccess, onError) {
+      window[callbackName] = function(data) {
+        delete window[callbackName];
+        document.head.removeChild(document.getElementById('jsonp-' + callbackName));
+        onSuccess(data);
+      };
+      var script = document.createElement('script');
+      script.id  = 'jsonp-' + callbackName;
+      script.src = url + '&callback=' + callbackName;
+      script.onerror = function() {
+        delete window[callbackName];
+        if (onError) onError();
+      };
+      document.head.appendChild(script);
+    }
+
+    function cargarDatos() {
+      jsonp(APPS_SCRIPT_URL + '?action=horarios', 'cbHorarios',
+        function(data){ cargarHorarios(data); },
+        function(){ setSelectError('agenda', 'Error cargando horarios'); }
+      );
+      jsonp(APPS_SCRIPT_URL + '?action=asesores', 'cbAsesores',
+        function(data){ cargarAsesores(data); },
+        function(){ setSelectError('asesor', 'Error cargando asesores'); }
+      );
+      jsonp(APPS_SCRIPT_URL + '?action=maquinas', 'cbMaquinas',
+        function(data){ cargarMaquinas(data); },
+        function(){ setSelectError('maquina', 'Error cargando máquinas'); }
+      );
+    }
+
+    function setSelectError(id, msg) {
+      document.getElementById(id).innerHTML = '<option value="">' + msg + '</option>';
+    }
+
+    function cargarHorarios(data) {
+      horariosDisponibles = Array.isArray(data) ? data : [];
+      var agenda = document.getElementById('agenda');
+      agenda.innerHTML = '';
+      if (horariosDisponibles.length === 0) {
+        agenda.innerHTML = '<option value="">Sin horarios disponibles</option>';
+        return;
+      }
+      var def = document.createElement('option');
+      def.value = ''; def.textContent = 'Seleccione fecha y técnico';
+      agenda.appendChild(def);
+      horariosDisponibles.forEach(function(item) {
+        var opt = document.createElement('option');
+        opt.value = item.fila;
+        var p = item.fecha.split('-');
+        var fl = p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : item.fecha;
+        opt.textContent = '📅 ' + fl + '  🕐 ' + item.hora + '  🔧 ' + item.tecnico;
+        agenda.appendChild(opt);
+      });
+    }
+
+    function cargarAsesores(data) {
+      var el = document.getElementById('asesor');
+      el.innerHTML = '';
+      var list = Array.isArray(data) ? data.filter(function(a){ return a && String(a).trim(); }) : [];
+      if (list.length === 0) { el.innerHTML = '<option value="">Sin asesores disponibles</option>'; return; }
+      var def = document.createElement('option'); def.value = ''; def.textContent = 'Seleccione un asesor';
+      el.appendChild(def);
+      list.forEach(function(n){ var o=document.createElement('option'); o.value=n; o.textContent=n; el.appendChild(o); });
+    }
+
+    function cargarMaquinas(data) {
+      var el = document.getElementById('maquina');
+      el.innerHTML = '';
+      var list = Array.isArray(data) ? data.filter(function(m){ return m && String(m).trim(); }) : [];
+      if (list.length === 0) { el.innerHTML = '<option value="">Sin máquinas disponibles</option>'; return; }
+      var def = document.createElement('option'); def.value = ''; def.textContent = 'Seleccione la referencia del equipo';
+      el.appendChild(def);
+      list.forEach(function(r){ var o=document.createElement('option'); o.value=r; o.textContent=r; el.appendChild(o); });
+    }
+
+    // ── Validación ──
+    function v(id, msg) {
+      var el = document.getElementById(id);
+      var err = document.getElementById('err-'+id);
+      if (!el.value.trim()) {
+        el.classList.add('invalid');
+        if (err) err.textContent = msg || 'Campo obligatorio';
+        return false;
+      }
+      el.classList.remove('invalid');
+      if (err) err.textContent = '';
+      return true;
+    }
+    function vEmail(id) {
+      var el = document.getElementById(id);
+      var err = document.getElementById('err-'+id);
+      var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
+      if (!ok) { el.classList.add('invalid'); if (err) err.textContent = 'Correo no válido'; return false; }
+      el.classList.remove('invalid'); if (err) err.textContent = ''; return true;
+    }
+
+    // ── Submit ──
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('formulario').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var ok = [
+          v('nombre','Ingresa el nombre o razón social'),
+          vEmail('email'),
+          v('telefono','Ingresa el teléfono principal'),
+          v('nroFactura','Ingresa el número de factura / CPV'),
+          v('direccion','Ingresa la dirección del servicio'),
+          v('barrio','Ingresa el barrio'),
+          v('contacto','Ingresa el nombre del contacto en sitio'),
+          v('telefonoContacto','Ingresa el teléfono del contacto'),
+          v('maquina','Selecciona la referencia de la máquina'),
+          v('asesor','Selecciona un asesor'),
+          v('agenda','Selecciona un horario disponible')
+        ].every(Boolean);
+        if (!ok) return;
+
+        var filaSeleccionada = document.getElementById('agenda').value;
+        var agenda = horariosDisponibles.find(function(h){ return String(h.fila) === String(filaSeleccionada); });
+        if (!agenda) { toast('Selecciona un horario válido.','err'); return; }
+
+        setBtnLoading(true);
+
+        var datos = {
+          action           : 'guardar',
+          nombre           : document.getElementById('nombre').value.trim(),
+          email            : document.getElementById('email').value.trim(),
+          telefono         : document.getElementById('telefono').value.trim(),
+          nroFactura       : document.getElementById('nroFactura').value.trim(),
+          direccion        : document.getElementById('direccion').value.trim(),
+          barrio           : document.getElementById('barrio').value.trim(),
+          contacto         : document.getElementById('contacto').value.trim(),
+          telefonoContacto : document.getElementById('telefonoContacto').value.trim(),
+          maquina          : document.getElementById('maquina').value,
+          asesor           : document.getElementById('asesor').value,
+          fecha            : agenda.fecha,
+          hora             : agenda.hora,
+          tecnico          : agenda.tecnico,
+          filaTecnico      : agenda.fila
+        };
+
+        // Enviar datos via JSONP — evita CORS
+        var params = Object.keys(datos).map(function(k) {
+          return encodeURIComponent(k) + '=' + encodeURIComponent(datos[k]);
+        }).join('&');
+
+        jsonp(APPS_SCRIPT_URL + '?' + params, 'cbGuardar',
+          function(resp) {
+            setBtnLoading(false);
+            if (resp && resp.success) {
+              document.getElementById('formulario').classList.add('hidden');
+              document.getElementById('ticket-id').textContent = resp.id;
+              document.getElementById('panel-exito').classList.remove('hidden');
+              jsonp(APPS_SCRIPT_URL + '?action=horarios', 'cbHorariosRefresh',
+                function(data){ cargarHorarios(data); }, null
+              );
+            } else {
+              toast('Error: ' + (resp && resp.error ? resp.error : 'Intenta de nuevo'), 'err');
+            }
+          },
+          function() { setBtnLoading(false); toast('Error de conexión. Intenta de nuevo.', 'err'); }
+        );
+      });
+    });
+
+    function setBtnLoading(loading) {
+      var btn = document.getElementById('btn-submit');
+      document.getElementById('btn-text').textContent = loading ? 'Registrando…' : 'Registrar solicitud';
+      document.getElementById('btn-spinner').classList.toggle('hidden', !loading);
+      btn.disabled = loading;
+    }
+
+    function toast(msg, tipo) {
+      var t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'toast ' + (tipo||'ok');
+      setTimeout(function(){ t.className = 'toast hidden'; }, 5000);
+    }
+
+    function nuevaSolicitud() {
+      document.getElementById('panel-exito').classList.add('hidden');
+      document.getElementById('formulario').classList.remove('hidden');
+      document.getElementById('formulario').reset();
+      document.querySelectorAll('.field-err').forEach(function(el){ el.textContent=''; });
+      document.querySelectorAll('.invalid').forEach(function(el){ el.classList.remove('invalid'); });
+    }
+  </script>
+</body>
+</html>
